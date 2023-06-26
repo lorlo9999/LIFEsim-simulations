@@ -1,6 +1,6 @@
 warnings.simplefilter('ignore')
 
-#set-up instrument code
+#insert set-up instrument code
 
 #define a detection threshold:
 threshold = 7
