@@ -21,7 +21,7 @@ threshold = 7
 # PARAMETERS OF THE STAR
 stemp = 5778 #Kelvin
 sradius = 1 #Solar radii
-slat = 1.3 #ecliptic latitude in radians 45deg = 0.78; 90deg = 1.57
+slat = 0.78 #ecliptic latitude in radians 45deg = 0.78; 90deg = 1.57
 zodi = 1 #zodis, examples: 1,10,100,1000
 
 #orbit radius of planet
