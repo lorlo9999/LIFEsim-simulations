@@ -1,0 +1,37 @@
+import lifesim
+from astropy import units as u
+
+#wavelength range
+wavel = np.linspace(3.000e-6,20e-6,3000) * u.m
+widths = 0.02e-6 * u.m
+
+#setting up the bus
+bus = lifesim.Bus()
+#choose observing scenario for instrument
+#options are pessimistic, baseline and optimistic
+
+bus.data.options.set_scenario('baseline')
+
+#necessary modules
+instrument = lifesim.Instrument(name='inst')
+bus.add_module(instrument)
+
+transm = lifesim.TransmissionMap(name='transm')
+bus.add_module(transm)
+
+#include the noise sources modules
+exozodi = lifesim.PhotonNoiseExozodi(name='exo')
+bus.add_module(exozodi)
+localzodi = lifesim.PhotonNoiseLocalzodi(name='local')
+bus.add_module(localzodi)
+star_leak = lifesim.PhotonNoiseStar(name='star')
+bus.add_module(star_leak)
+
+#connect the modules
+bus.connect(('inst', 'transm'))
+bus.connect(('inst', 'exo'))
+bus.connect(('inst', 'local'))
+bus.connect(('inst', 'star'))
+bus.connect(('star', 'transm'))
+
+#you can now perform observations with the LIFE interferometer
