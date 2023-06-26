@@ -1,14 +1,7 @@
-import lifesim
-import warnings
-import numpy as np
-from matplotlib.pyplot import figure, show
-from astropy import units as u
-import scienceplots
+#include here instrument set-up code
 
 #LIFEsim prints out warning messages to remind the user to use updated version, this line ignores them
 warnings.simplefilter('ignore')
-
-#include here instrument set-up code
 
 #brightness temperature, radius of planet and the distance range to be considered
 temperature = 600 #Kelvin
