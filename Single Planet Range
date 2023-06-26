@@ -1,5 +1,4 @@
 #include here instrument set-up code
-
 #LIFEsim prints out warning messages to remind the user to use updated version, this line ignores them
 warnings.simplefilter('ignore')
 
