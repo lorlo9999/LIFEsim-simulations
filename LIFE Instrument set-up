@@ -1,5 +1,7 @@
 import lifesim
 from astropy import units as u
+import warnings
+import numpy as np
 
 #wavelength range
 wavel = np.linspace(3.000e-6,20e-6,3000) * u.m
