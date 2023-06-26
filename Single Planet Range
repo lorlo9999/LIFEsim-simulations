@@ -1,0 +1,48 @@
+import lifesim
+import warnings
+import numpy as np
+from matplotlib.pyplot import figure, show
+from astropy import units as u
+import scienceplots
+
+#LIFEsim prints out warning messages to remind the user to use updated version, this line ignores them
+warnings.simplefilter('ignore')
+
+#brightness temperature, radius of planet and the distance range to be considered
+temperature = 600 #Kelvin
+rad = 1.0 #earth radii
+distance = np.arange(20,2000) #parsecs
+
+#define a detection threshold
+threshold = 7
+
+# PARAMETERS OF THE STAR
+stemp = 5778 #Kelvin
+sradius = 1 #Solar radii
+slat = 1.3 #ecliptic latitude in radians 45deg = 0.78; 90deg = 1.57
+zodi = 1 #zodis, examples: 1,10,100,1000
+
+#orbit radius of planet
+orbit = 1 #AU
+
+#integration time in seconds
+intime = 7200
+intime_hours = intime/3600 #integration time in hours
+baseline_planet = False #optimizes baseline for planet if True
+
+for dist in distance:
+    #flux of the planet as a blackbody at temperature 'T' and distance 'dist'
+    spec = lifesim.util.radiation.black_body(mode = 'planet', bins=wavel.value, width=widths.value, temp= temperature, radius = rad, distance = dist); spec = spec / u.m**2 / u.s; spec /= widths
+    #re-write the flux in the format lifesim requires for the 'getspectrum' function
+    planet_flux = [wavel, spec]
+    #change angular separation for planet to stay at constant orbit from the star
+    n = orbit * u.AU; n = n.to(u.pc)
+    ang = (n.value/dist) * (360/(2*np.pi)) * 3600
+    #SNR per bin
+    bins_snr, pflux, noise = instrument.get_spectrum(temp_s=stemp, radius_s=sradius, lat_s=slat, z=zodi, distance_s=dist, angsep=ang, flux_planet_spectrum=planet_flux, integration_time=intime)
+    #formula to estimate total S/N
+    SNR = np.sqrt(np.sum(bins_snr[1]**2))
+    if SNR <= threshold:
+        final = dist
+        print(f"Planet was detected, for an integration time of {intime_hours} hours, up to a distance: {final-1} parsecs")
+        break
