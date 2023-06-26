@@ -1,0 +1,37 @@
+#instrument set-up code here
+
+#temperature of the planet
+temperature = 3000 #Kelvin
+distance = np.arange(20,200000) #unreachable upper limit to find S/N values until threshold is reached
+#if the user prefers to have a S/N curve within a defined range, change this range and remove the break command in the for loop
+
+#PARAMETERS OF THE PLANET
+rad = 1.0 #earth radii
+orbit = 1 #AU
+
+# PARAMETERS OF THE STAR
+stemp = 5778 #Kelvin
+sradius = 1 #Solar radii
+slat = 0.78 #ecliptic latitude in radians 45deg = 0.78; 90deg = 1.57
+zodi = 1 #zodis, examples: 1,10,100,1000
+
+intime = 7200 #integration time in seconds
+baseline_planet = False #optimizes baseline for planet if True
+
+#create empty list where the S/N value will be stored at each distance value to obtain a curve
+SN = [];
+for dist in distance:
+    #flux of the planet at temperature T and distance dist
+    spec = lifesim.util.radiation.black_body(mode = 'planet', bins=wavel.value, width=widths.value, temp= temperature, radius = rad, distance = dist); spec = spec / u.m**2 / u.s; spec /= widths
+    planet_flux = [wavel, spec]
+    #change angular separation to keep planet's orbit constant
+    n = orbit * u.AU; n = n.to(u.pc)
+    ang = (n.value/dist) * (360/(2*np.pi)) * 3600
+    #SNR per bin
+    bins_snr, pflux, noise = instrument.get_spectrum(temp_s=stemp, radius_s=sradius, lat_s=slat, z=zodi, distance_s=dist, angsep=ang, flux_planet_spectrum=planet_flux, integration_time=intime)
+    SNR = np.sqrt(np.sum(bins_snr[1]**2)); SN.append(SNR)
+    if SNR <= 7:
+        final = dist
+        break #remove this if you want the code to keep running past threshold
+
+#the final list SN can then be plotted against the distance to obtain the S/N curve
