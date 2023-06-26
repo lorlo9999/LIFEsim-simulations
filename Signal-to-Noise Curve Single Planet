@@ -1,4 +1,4 @@
-#instrument set-up code here
+#include instrument set-up code here
 
 #temperature of the planet
 temperature = 3000 #Kelvin
