@@ -1,0 +1,40 @@
+warnings.simplefilter('ignore')
+
+#set-up instrument code
+
+#define a detection threshold:
+threshold = 7
+
+#PARAMETERS OF THE PLANET
+rad = 1.0 #earth radii
+temperature = 1500 #Kelvin
+orbit = 1 #AU
+
+# PARAMETERS OF THE STAR AD Leonis
+stemp = 5780 #Kelvin
+sradius = 1 #Solar radii
+slat = 0.78 #ecliptic latitude in radians 45deg = 0.78; 90deg = 1.57
+zodi = 1 #zodis, examples: 1,10,100,1000
+
+#distance planet-host star system to the Sun
+dist = 36 #parsecs
+
+#for the integration time you can choose a sensible range to perform the simulations in, for each integration time
+#the code runs once to check
+intime = np.arange(1,35000) #integration times in minutes
+intime = intime*60 #integration time in seconds
+baseline_planet = False #optimizes baseline for planet
+
+for time in intime:
+    #flux of the planet at temperature T and distance dist, at fixed Radius
+    spec = lifesim.util.radiation.black_body(mode = 'planet', bins=wavel.value, width=widths.value, temp= temperature, radius = rad, distance = dist); spec = spec / u.m**2 / u.s; spec /= widths
+    planet_flux = [wavel, spec]
+    n = orbit * u.AU; n = n.to(u.pc)
+    ang = (n.value/dist) * (360/(2*np.pi)) * 3600
+    #SNR per bin
+    bins_snr, pflux, noise = instrument.get_spectrum(temp_s=stemp, radius_s=sradius, lat_s=slat, z=zodi, distance_s=dist, angsep=ang, flux_planet_spectrum=planet_flux, integration_time=time)
+    SNR = np.sqrt(np.sum(bins_snr[1]**2))
+    if SNR >= threshold:
+        final = time
+        print(f"Minimum integration time for detection: {final/60} minutes")
+        break
