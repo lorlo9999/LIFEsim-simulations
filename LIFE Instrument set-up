@@ -24,8 +24,10 @@ bus.add_module(transm)
 #include the noise sources modules
 exozodi = lifesim.PhotonNoiseExozodi(name='exo')
 bus.add_module(exozodi)
+
 localzodi = lifesim.PhotonNoiseLocalzodi(name='local')
 bus.add_module(localzodi)
+
 star_leak = lifesim.PhotonNoiseStar(name='star')
 bus.add_module(star_leak)
 
