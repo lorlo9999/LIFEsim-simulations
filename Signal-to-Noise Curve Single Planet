@@ -2,7 +2,7 @@
 
 #temperature of the planet
 temperature = 3000 #Kelvin
-distance = np.arange(20,200000) #unreachable upper limit to find S/N values until threshold is reached
+distance = np.arange(20,200000) #unreachable upper limit to find S/N values until threshold is reache
 #if the user prefers to have a S/N curve within a defined range, change this range and remove the break command in the for loop
 
 #PARAMETERS OF THE PLANET
